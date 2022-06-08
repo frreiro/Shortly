@@ -8,13 +8,11 @@ import usersRouter from "./routers/usersRouter.js";
 dotenv.config();
 
 const app = express();
+app.use(express.json())
+
 app.use(authRouter);
 app.use(urlsRouter)
 app.use(usersRouter)
-
-
-
-
 
 const port = process.env.PORT
 app.listen(port, () => {
