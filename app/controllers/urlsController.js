@@ -1,15 +1,18 @@
 import connection from "../database/db.js"
-import { nanoid } from "nanoid"
+import { customAlphabet, nanoid } from "nanoid"
 
 
 export async function shortUrl(req, res) {
     const { url } = req.body
     const { userId } = res.locals
+
+    const nanoid = customAlphabet('1234567890abcdef', 10);
+
     try {
         await connection.query(`
         INSERT INTO shortedUrls (url,"shortUrl","userId")
         VALUES ($1,$2,$3)
-        `, [url, nanoid(10), userId])
+        `, [url, nanoid(), userId])
         res.sendStatus(201)
 
     } catch (e) {
@@ -32,7 +35,25 @@ export async function getUrl(req, res) {
         else res.status(200).send(shortedUrl)
 
     } catch (e) {
-        console.log(e)
+        res.sendStatus(500)
+
+    }
+}
+
+export async function redirectUrl(req, res) {
+    const { shortUrl } = req.params
+
+    try {
+        const url = (await connection.query(`
+        UPDATE shortedUrls 
+        SET views = views + 1
+        WHERE "shortUrl" = $1
+        RETURNING url
+        `, [shortUrl])).rows[0]
+
+        if (!url.url) return res.sendStatus(404);
+        else res.status(200).redirect(url.url);
+    } catch (e) {
         res.sendStatus(500)
 
     }
