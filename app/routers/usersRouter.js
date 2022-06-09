@@ -3,7 +3,7 @@ import { Router } from "express";
 const usersRouter = Router();
 
 usersRouter.get('/users/:id')
-usersRouter.post('/users/ranking')
+usersRouter.post('/ranking')
 
 
 

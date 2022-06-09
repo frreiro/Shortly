@@ -14,7 +14,7 @@ CREATE TABLE shortedUrls (
     url text NOT NULL,
     "shortUrl" text NOT NULL,
     "userId" integer REFERENCES users(id),
-    views integer NOT NULL,
+    views integer NOT NULL DEFAULT 0,
     "createAt" timestamp without time zone NOT NULL DEFAULT NOW()
 )
 
