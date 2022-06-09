@@ -1,4 +1,3 @@
-CREATE DATABASE shortly_db
 
 
 CREATE TABLE users (
