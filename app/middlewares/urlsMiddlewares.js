@@ -1,4 +1,5 @@
 import Joi from "joi";
+import connection from "../database/db.js";
 
 
 export async function urlValidate(req, res, next) {
@@ -25,3 +26,19 @@ export async function idParamValidate(req, res, next) {
     else next();
 }
 
+export async function belongUser(req, res, next) {
+    const { id } = req.params;
+    const { userId } = res.locals;
+
+    try {
+        const idUser = (await connection.query(`
+        SELECT "userId" FROM shortedUrls WHERE id = $1
+        `, [id])).rows[0]
+
+        if (!idUser) return res.sendStatus(404);
+        else if (userId !== idUser.userId) return res.sendStatus(401);
+        else next();
+    } catch (e) {
+        res.sendStatus(500);
+    }
+}

@@ -1,5 +1,5 @@
 import connection from "../database/db.js"
-import { customAlphabet, nanoid } from "nanoid"
+import { customAlphabet } from "nanoid"
 
 
 export async function shortUrl(req, res) {
@@ -56,5 +56,17 @@ export async function redirectUrl(req, res) {
     } catch (e) {
         res.sendStatus(500)
 
+    }
+}
+
+export async function deleteUrl(req, res) {
+    const { id } = req.params;
+    try {
+        await connection.query(`
+        DELETE FROM shortedUrls 
+        WHERE id = $1 `, [id])
+        res.sendStatus(204);
+    } catch (e) {
+        res.sendStatus(500);
     }
 }
