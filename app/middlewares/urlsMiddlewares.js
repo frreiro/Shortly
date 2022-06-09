@@ -14,3 +14,14 @@ export async function urlValidate(req, res, next) {
 }
 
 
+
+export async function idParamValidate(req, res, next) {
+    const { id } = req.params;
+
+    const idSchema = Joi.number().integer().required();
+
+    const { error } = idSchema.validate(id);
+    if (error) return res.status(422).send(error.details.map(d => d.message));
+    else next();
+}
+

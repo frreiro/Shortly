@@ -13,6 +13,25 @@ export async function shortUrl(req, res) {
         res.sendStatus(201)
 
     } catch (e) {
+        res.sendStatus(500)
+
+    }
+}
+
+export async function getUrl(req, res) {
+    const { id } = req.params;
+
+    try {
+        const shortedUrl = (await connection.query(`
+        SELECT id,"shortUrl", url 
+        FROM shortedUrls
+        WHERE id = $1
+        `, [id])).rows[0]
+
+        if (!shortedUrl) return res.sendStatus(404);
+        else res.status(200).send(shortedUrl)
+
+    } catch (e) {
         console.log(e)
         res.sendStatus(500)
 
