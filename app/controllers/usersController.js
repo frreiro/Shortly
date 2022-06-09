@@ -20,6 +20,26 @@ export async function getUserData(req, res) {
     }
 }
 
+
+export async function usersRanking(req, res) {
+    try {
+        const ranking = (await connection.query(`
+        SELECT s."userId" as id, u.name,COUNT(s.url) as "linksCounts", SUM(s.views) as "visitCount"
+        FROM shortedUrls s
+        JOIN users U ON s."userId" = u.id
+        GROUP BY s."userId", u.name
+        ORDER BY "visitCount" DESC
+        LIMIT 10
+        `)).rows
+
+        res.status(200).send(ranking);
+    } catch (e) {
+        res.sendStatus(500);
+    }
+}
+
+
+
 function _mapUserInfoArrayToObject(rows) {
     const { name, userId: id } = rows[0];
     let visitCount = 0
