@@ -1,4 +1,5 @@
 import { v4 as uuid } from "uuid";
+import jwt from "jsonwebtoken"
 
 import connection from "../database/db.js";
 
@@ -22,15 +23,9 @@ export async function signup(req, res) {
 export async function signin(req, res) {
     const { userId } = res.locals;
 
-    const token = uuid();
-    try {
-        await connection.query(`
-        INSERT INTO sessions ("userId", token) 
-        VALUES ($1,$2)
-        `, [userId, token])
-        res.sendStatus(200)
-    } catch (e) {
-        res.sendStatus(500)
-    }
+    const dados = { userId }
+    const key = process.env.JWT_KEY
+    const token = jwt.sign(dados, key);
+    res.status(200).send({ token })
 
 }
