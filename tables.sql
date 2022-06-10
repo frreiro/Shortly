@@ -17,10 +17,3 @@ CREATE TABLE shortedUrls (
     "createAt" timestamp without time zone NOT NULL DEFAULT NOW()
 )
 
-
-CREATE TABLE sessions (
-    id serial PRIMARY KEY,
-    "userId" integer REFERENCES users(id),
-    token text NOT NULL,
-    "createAt" timestamp without time zone NOT NULL DEFAULT NOW()
-)
