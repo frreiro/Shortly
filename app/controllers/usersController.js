@@ -24,11 +24,11 @@ export async function getUserData(req, res) {
 export async function usersRanking(req, res) {
     try {
         const ranking = (await connection.query(`
-        SELECT s."userId" as id, u.name,COUNT(s.url) as "linksCounts", SUM(s.views) as "visitCount"
+        SELECT u.id as id, u.name,COUNT(s.url) as "linksCounts", COALESCE(SUM(s.views),0) as "visitCount"
         FROM shortedUrls s
-        JOIN users U ON s."userId" = u.id
-        GROUP BY s."userId", u.name
-        ORDER BY "visitCount" DESC
+        RIGHT JOIN users U ON s."userId" = u.id
+        GROUP BY u.id, u.name
+        ORDER BY "visitCount" DESC, "linksCounts" DESC
         LIMIT 10
         `)).rows
 
