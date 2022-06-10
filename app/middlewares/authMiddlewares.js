@@ -1,6 +1,7 @@
 import Joi from "joi";
 import bcrypt from "bcrypt";
 import connection from "../database/db.js";
+import { getUserId } from "../repository/authRepository.js";
 
 export async function signupValidate(req, res, next) {
     const body = req.body
@@ -33,11 +34,7 @@ export async function signinValidate(req, res, next) {
 export async function userValidate(req, res, next) {
     const { email, password } = req.body;
     try {
-        const user = (await connection.query(`
-        SELECT id, password 
-        FROM users 
-        WHERE email = $1
-        `, [email])).rows[0]
+        const user = (await getUserId(email)).rows[0]
 
         if (user && bcrypt.compareSync(password, user.password)) {
             res.locals.userId = user.id
