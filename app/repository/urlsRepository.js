@@ -1,14 +1,12 @@
 import connection from "../database/db.js";
-import { customAlphabet } from "nanoid"
 
 
-export async function setShortUrl(url, userId) {
+export async function setShortUrl(url, shortUrl, userId) {
 
-    const nanoid = customAlphabet('1234567890abcdef', 10);
     return connection.query(`
     INSERT INTO shortedUrls (url,"shortUrl","userId")
     VALUES ($1,$2,$3)
-    `, [url, nanoid(), userId])
+    `, [url, shortUrl, userId])
 }
 
 export async function getUrl(id) {

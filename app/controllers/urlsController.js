@@ -1,3 +1,5 @@
+import { customAlphabet } from "nanoid"
+
 import { deleteShortUrl, getAndUpdateUrl, getUrl, setShortUrl } from "../repository/urlsRepository.js";
 
 
@@ -6,8 +8,12 @@ export async function shortUrl(req, res) {
     const { userId } = res.locals
 
     try {
-        await setShortUrl(url, userId);
-        res.sendStatus(201)
+
+        const nanoid = customAlphabet('1234567890abcdef', 10);
+        const shortUrl = nanoid();
+        await setShortUrl(url, shortUrl, userId);
+
+        res.status(201).send({ shortUrl })
 
     } catch (e) {
         res.sendStatus(500)
