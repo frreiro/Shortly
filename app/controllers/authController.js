@@ -26,7 +26,6 @@ export async function signin(req, res) {
     const dados = { userId }
     const key = process.env.JWT_KEY
     const token = jwt.sign(dados, key);
-    console.log(token)
     res.status(200).send({ token })
 
 }
