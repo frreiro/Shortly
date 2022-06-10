@@ -15,7 +15,6 @@ export async function getUserData(req, res) {
         else res.status(200).send(_mapUserInfoArrayToObject(userInfo))
 
     } catch (e) {
-        console.log(e)
         res.sendStatus(500)
     }
 }

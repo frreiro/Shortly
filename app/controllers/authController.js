@@ -15,7 +15,6 @@ export async function signup(req, res) {
         `, [name, email, encryptPassword]);
         res.sendStatus(201)
     } catch (e) {
-        console.log(e)
         res.sendStatus(500);
     }
 }
