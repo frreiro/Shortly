@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken"
 
 
 import connection from "../database/db.js";
+import { getUser } from "../repository/usersRepository.js";
 
 
 
@@ -21,10 +22,7 @@ export async function tokenValidate(req, res, next) {
     }
 
     try {
-        const id = (await connection.query(`
-        SELECT id FROM users
-        WHERE id = $1
-        `, [userId])).rows[0]
+        const id = (await getUser(userId)).rows[0]
 
         if (!id) return res.sendStatus(401);
         res.locals.userId = userId;

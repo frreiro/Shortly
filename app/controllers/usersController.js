@@ -1,15 +1,10 @@
-import connection from "../database/db.js"
+import { getUserData, getUserRanking } from "../repository/usersRepository.js";
 
-export async function getUserData(req, res) {
+export async function sendUserData(req, res) {
     const { id } = req.params;
 
     try {
-        const userInfo = (await connection.query(`
-        SELECT u.id as "userId", u.name, s.id, s."shortUrl", s.url, s.views as "visitCount"
-        FROM users u
-        JOIN shortedUrls s ON u.id = s."userId"
-        WHERE u.id = $1
-        `, [id])).rows
+        const userInfo = (await getUserData(id)).rows
 
         if (!userInfo.length > 0) return res.sendStatus(404)
         else res.status(200).send(_mapUserInfoArrayToObject(userInfo))
@@ -22,14 +17,7 @@ export async function getUserData(req, res) {
 
 export async function usersRanking(req, res) {
     try {
-        const ranking = (await connection.query(`
-        SELECT u.id as id, u.name,COUNT(s.url) as "linksCounts", COALESCE(SUM(s.views),0) as "visitCount"
-        FROM shortedUrls s
-        RIGHT JOIN users U ON s."userId" = u.id
-        GROUP BY u.id, u.name
-        ORDER BY "visitCount" DESC, "linksCounts" DESC
-        LIMIT 10
-        `)).rows
+        const ranking = (await getUserRanking()).rows
 
         res.status(200).send(ranking);
     } catch (e) {
